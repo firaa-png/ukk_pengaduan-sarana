@@ -17,15 +17,68 @@ class SiswaAreaController extends Controller
         $selesai = 0;
         $last = null;
         $proses = 0;
+        // By default, get recent pengaduan (limit 6)
+        $otherPengaduans = Pengaduan::with(['kategori','siswa'])->orderBy('created_at','desc')->take(6)->get();
 
         if ($siswa) {
             $total = Pengaduan::where('pelapor', 'like', "%{$siswa->nama}%")->count();
             $selesai = Pengaduan::where('pelapor', 'like', "%{$siswa->nama}%")->where('status','Selesai')->count();
             $last = Pengaduan::where('pelapor', 'like', "%{$siswa->nama}%")->orderBy('created_at','desc')->first();
             $proses = Pengaduan::where('pelapor', 'like', "%{$siswa->nama}%")->where('status','Dalam Proses')->count();
+
+            // If a siswa is logged in, exclude their own pengaduan from the recent list
+            $otherPengaduans = Pengaduan::with(['kategori','siswa'])
+                ->where('pelapor', 'not like', "%{$siswa->nama}%")
+                ->orderBy('created_at','desc')
+                ->take(6)
+                ->get();
         }
 
-        return view('siswa.dashboard', compact('siswa','total','selesai','last','proses'));
+        return view('siswa.dashboard', compact('siswa','total','selesai','last','proses','otherPengaduans'));
+    }
+
+    /**
+     * Show paginated list of pengaduan from other students.
+     */
+    public function others(Request $request)
+    {
+        $siswaId = $request->session()->get('siswa_id');
+        $siswa = $siswaId ? Siswa::find($siswaId) : null;
+
+        // Available filters from query string
+        $filterKategori = $request->query('kategori');
+        $filterStatus = $request->query('status');
+        $filterBulan = $request->query('bulan'); // expect month number '01'..'12'
+
+        $query = Pengaduan::with(['kategori','siswa'])->orderBy('created_at','desc');
+        if ($siswa) {
+            $query->where('pelapor', 'not like', "%{$siswa->nama}%");
+        }
+
+        // Apply kategori filter
+        if ($filterKategori) {
+            $query->where('kategori_id', $filterKategori);
+        }
+
+        // Apply status filter
+        if ($filterStatus) {
+            $query->where('status', $filterStatus);
+        }
+
+        // Apply month filter (by month number)
+        if ($filterBulan) {
+            $query->whereMonth('created_at', intval($filterBulan));
+        }
+
+        // Clone query to get total before pagination
+        $total = (clone $query)->count();
+
+        $pengaduans = $query->paginate(12)->withQueryString();
+
+        // load categories for filter select
+        $kategoris = \App\Models\Kategori::orderBy('nama_kategori')->get();
+
+        return view('siswa.others', compact('siswa','pengaduans','kategoris','total','filterKategori','filterStatus','filterBulan'));
     }
 
     public function createAspirasi()

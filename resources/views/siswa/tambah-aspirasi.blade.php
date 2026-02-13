@@ -59,7 +59,7 @@
                 </div>
                 <div class="form-group">
                     <label for="deskripsi">Isi Pengaduan</label>
-                        <textarea name="deskripsi" id="deskripsi" class="form-control" rows="5">{{ old('deskripsi') }}</textarea>
+                        <textarea name="deskripsi" id="deskripsi" class="form-control" rows="5">{{ old('deskripsi', request()->query('deskripsi')) }}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="gambar">Lampiran Gambar </label>

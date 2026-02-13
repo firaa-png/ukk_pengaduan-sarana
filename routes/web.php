@@ -75,6 +75,8 @@ Route::prefix('siswa')->name('siswa.')->group(function () {
     Route::get('/aspirasi/tambah', [SiswaAreaController::class, 'tambahAspirasi'])->name('tambah-aspirasi');
     Route::post('/aspirasi', [SiswaAreaController::class, 'storeAspirasi'])->name('store-aspirasi');
     Route::get('/history', [SiswaAreaController::class, 'history'])->name('history');
+    // Page to view pengaduan submitted by other students
+    Route::get('/pengaduan-lain', [SiswaAreaController::class, 'others'])->name('pengaduan.lain');
     // NOTE: quick-login removed — students now login via the main login form (username/password or NIS)
     // Allow siswa to edit/delete their own pengaduan from the siswa area
     Route::get('/pengaduan/{pengaduan}/edit', [SiswaAreaController::class, 'editPengaduan'])->name('pengaduan.edit');

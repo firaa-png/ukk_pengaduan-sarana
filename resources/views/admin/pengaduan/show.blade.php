@@ -98,9 +98,9 @@
                                                         </div>
 
                                                         @php
-                                                            $canViewImage = auth()->check() || (session('siswa_id') && $pengaduan->siswa_id == session('siswa_id'));
+                                                            // Show gambar to anyone when it exists (previously limited to admin/owner)
                                                         @endphp
-                                                        @if($pengaduan->gambar && $canViewImage)
+                                                        @if($pengaduan->gambar)
                                                             @php $imgPath = public_path($pengaduan->gambar); @endphp
                                                             <hr />
                                                             <h5>Gambar:</h5>

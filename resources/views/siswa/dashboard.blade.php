@@ -100,8 +100,9 @@
             </a>
         </div>
     </div>
-
     @endif
+
+    {{-- Recent reports removed as requested --}}
 
 </div>
 @endsection

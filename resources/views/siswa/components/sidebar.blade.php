@@ -72,6 +72,11 @@
                 <i class="fas fa-fw fa-edit"></i>
                 <span>Input Aspirasi</span></a>
         </li>
+        <li class="nav-item {{ request()->routeIs('siswa.pengaduan.lain') ? 'active' : '' }}">
+            <a class="nav-link {{ request()->routeIs('siswa.pengaduan.lain') ? 'text-white' : '' }}" href="{{ route('siswa.pengaduan.lain') }}">
+                <i class="fas fa-fw fa-list"></i>
+                <span>Aspirasi dari Siswa Lain</span></a>
+        </li>
         <li class="nav-item {{ request()->routeIs('siswa.history') ? 'active' : '' }}">
             <a class="nav-link {{ request()->routeIs('siswa.history') ? 'text-white' : '' }}" href="{{ route('siswa.history') }}">
                 <i class="fas fa-fw fa-history"></i>
